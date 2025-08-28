@@ -187,6 +187,10 @@ func (d *Driver) handleCallbacks(
 					return
 				}
 
+				if len(rb) == 0 {
+					continue
+				}
+
 				fmt.Println("rb: ", string(rb))
 
 				b = append(b, rb...)
