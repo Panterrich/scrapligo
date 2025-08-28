@@ -187,11 +187,15 @@ func (d *Driver) handleCallbacks(
 					return
 				}
 
+				fmt.Println("rb: ", string(rb))
+
 				b = append(b, rb...)
 				fb = append(fb, rb...)
 
 				for i, cb := range callbacks {
+					fmt.Println("cb: ", cb.Name)
 					if cb.check(b) {
+						fmt.Println("callback triggered: ", cb.Name)
 						c <- &callbackResult{
 							i:         i,
 							callbacks: callbacks,
@@ -202,7 +206,11 @@ func (d *Driver) handleCallbacks(
 
 						return
 					}
+
+					fmt.Println("callback not triggered: ", cb.Name)
 				}
+
+				fmt.Println("no callback triggered")
 			}
 		}
 	}()
