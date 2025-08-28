@@ -178,7 +178,7 @@ func (d *Driver) handleCallbacks(
 		for {
 			select {
 			case <-ctx.Done():
-				fmt.Println("ctx done!!!!!!!!!!!!!!")
+				d.Logger.Debug("ctx done in handleCallbacks!")
 				return
 			default:
 				rb, err := d.Channel.Read()
@@ -194,15 +194,15 @@ func (d *Driver) handleCallbacks(
 					continue
 				}
 
-				fmt.Println("rb: ", string(rb))
+				d.Logger.Debugf("rb: `%s`", string(rb))
 
 				b = append(b, rb...)
 				fb = append(fb, rb...)
 
 				for i, cb := range callbacks {
-					fmt.Println("cb: ", cb.Name)
+					d.Logger.Debugf("cb: `%s`", cb.Name)
 					if cb.check(b) {
-						fmt.Println("callback triggered: ", cb.Name)
+						d.Logger.Debugf("callback triggered: `%s`", cb.Name)
 						c <- &callbackResult{
 							i:         i,
 							callbacks: callbacks,
@@ -214,10 +214,10 @@ func (d *Driver) handleCallbacks(
 						return
 					}
 
-					fmt.Println("callback not triggered: ", cb.Name)
+					d.Logger.Debugf("callback not triggered: `%s`", cb.Name)
 				}
 
-				fmt.Println("no callback triggered")
+				d.Logger.Debug("no callback triggered")
 			}
 		}
 	}()
@@ -225,7 +225,7 @@ func (d *Driver) handleCallbacks(
 	select {
 	case r := <-c:
 		if r == nil {
-			fmt.Println("r is nil")
+			d.Logger.Debug("r is nil in select!")
 			return nil, fmt.Errorf("%w: reading from closed channel during callbacks", util.ErrTimeoutError)
 		}
 
@@ -233,9 +233,11 @@ func (d *Driver) handleCallbacks(
 			return nil, r.err
 		}
 
+		d.Logger.Debugf("executeCallback")
+
 		return d.executeCallback(r.i, r.callbacks, r.b, r.fb, timeout)
 	case <-ctx.Done():
-		fmt.Println("ctx done in select!!!!!!!!!!!!!!")
+		d.Logger.Debug("ctx done in select!")
 		return nil, fmt.Errorf("%w: timeout handling callbacks", util.ErrTimeoutError)
 	}
 }
@@ -267,7 +269,7 @@ func (d *Driver) SendWithCallbacks(
 	)
 
 	if input != "" {
-		fmt.Println("writing input!!!!!!!!!!!!!!!!!!!!!!!!: ", input)
+		d.Logger.Debugf("writing input: `%s`", input)
 		err := d.Channel.WriteAndReturn([]byte(input), false)
 		if err != nil {
 			return nil, err
