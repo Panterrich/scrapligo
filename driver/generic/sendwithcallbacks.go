@@ -178,6 +178,7 @@ func (d *Driver) handleCallbacks(
 		for {
 			select {
 			case <-ctx.Done():
+				fmt.Println("ctx done!!!!!!!!!!!!!!")
 				return
 			default:
 				rb, err := d.Channel.Read()
@@ -224,6 +225,7 @@ func (d *Driver) handleCallbacks(
 	select {
 	case r := <-c:
 		if r == nil {
+			fmt.Println("r is nil")
 			return nil, fmt.Errorf("%w: reading from closed channel during callbacks", util.ErrTimeoutError)
 		}
 
@@ -233,6 +235,7 @@ func (d *Driver) handleCallbacks(
 
 		return d.executeCallback(r.i, r.callbacks, r.b, r.fb, timeout)
 	case <-ctx.Done():
+		fmt.Println("ctx done in select!!!!!!!!!!!!!!")
 		return nil, fmt.Errorf("%w: timeout handling callbacks", util.ErrTimeoutError)
 	}
 }
