@@ -267,6 +267,7 @@ func (d *Driver) SendWithCallbacks(
 	)
 
 	if input != "" {
+		fmt.Println("writing input!!!!!!!!!!!!!!!!!!!!!!!!: ", input)
 		err := d.Channel.WriteAndReturn([]byte(input), false)
 		if err != nil {
 			return nil, err
