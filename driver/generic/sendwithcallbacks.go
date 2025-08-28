@@ -145,12 +145,12 @@ func (d *Driver) executeCallback(
 	}
 
 	if cb.Complete {
-		fmt.Println("complete!!!!!!!!!!!!!!")
+		d.Logger.Debug("complete!!!!!!!!!!!!!!")
 		return fb, nil
 	}
 
 	if cb.ResetOutput {
-		fmt.Println("resetting output!!!!!!!!!!!!!!")
+		d.Logger.Debug("resetting output!!!!!!!!!!!!!!")
 		b = nil
 	}
 
