@@ -145,12 +145,12 @@ func (d *Driver) executeCallback(
 	}
 
 	if cb.Complete {
-		d.Logger.Debug("complete!!!!!!!!!!!!!!")
+		fmt.Println("complete!!!")
 		return fb, nil
 	}
 
 	if cb.ResetOutput {
-		d.Logger.Debug("resetting output!!!!!!!!!!!!!!")
+		fmt.Println("resetting output!!!")
 		b = nil
 	}
 
@@ -178,7 +178,7 @@ func (d *Driver) handleCallbacks(
 		for {
 			select {
 			case <-ctx.Done():
-				d.Logger.Debug("ctx done in handleCallbacks!")
+				fmt.Println("ctx done in handleCallbacks!")
 				return
 			default:
 				rb, err := d.Channel.Read()
@@ -194,15 +194,15 @@ func (d *Driver) handleCallbacks(
 					continue
 				}
 
-				d.Logger.Debugf("rb: `%s`", string(rb))
+				fmt.Printf("rb: `%s`\n", string(rb))
 
 				b = append(b, rb...)
 				fb = append(fb, rb...)
 
 				for i, cb := range callbacks {
-					d.Logger.Debugf("cb: `%s`", cb.Name)
+					fmt.Printf("cb: `%s`\n", cb.Name)
 					if cb.check(b) {
-						d.Logger.Debugf("callback triggered: `%s`", cb.Name)
+						fmt.Printf("callback triggered: `%s`\n", cb.Name)
 						c <- &callbackResult{
 							i:         i,
 							callbacks: callbacks,
@@ -214,10 +214,10 @@ func (d *Driver) handleCallbacks(
 						return
 					}
 
-					d.Logger.Debugf("callback not triggered: `%s`", cb.Name)
+					fmt.Printf("callback not triggered: `%s`\n", cb.Name)
 				}
 
-				d.Logger.Debug("no callback triggered")
+				fmt.Println("no callback triggered")
 			}
 		}
 	}()
@@ -225,7 +225,7 @@ func (d *Driver) handleCallbacks(
 	select {
 	case r := <-c:
 		if r == nil {
-			d.Logger.Debug("r is nil in select!")
+			fmt.Println("r is nil in select!")
 			return nil, fmt.Errorf("%w: reading from closed channel during callbacks", util.ErrTimeoutError)
 		}
 
@@ -233,11 +233,11 @@ func (d *Driver) handleCallbacks(
 			return nil, r.err
 		}
 
-		d.Logger.Debugf("executeCallback")
+		fmt.Println("executeCallback")
 
 		return d.executeCallback(r.i, r.callbacks, r.b, r.fb, timeout)
 	case <-ctx.Done():
-		d.Logger.Debug("ctx done in select!")
+		fmt.Println("ctx done in select!")
 		return nil, fmt.Errorf("%w: timeout handling callbacks", util.ErrTimeoutError)
 	}
 }
@@ -269,7 +269,7 @@ func (d *Driver) SendWithCallbacks(
 	)
 
 	if input != "" {
-		d.Logger.Debugf("writing input: `%s`", input)
+		fmt.Printf("writing input: `%s`\n", input)
 		err := d.Channel.WriteAndReturn([]byte(input), false)
 		if err != nil {
 			return nil, err
