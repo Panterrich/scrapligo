@@ -33,6 +33,8 @@ func (c *Channel) GetPrompt() ([]byte, error) {
 
 		b, err = c.ReadUntilPrompt(ctx)
 
+		CompareOutputs(b)
+
 		// we already know the pattern is in the buf, we just want ot re to yoink it out without
 		// any newlines or extra stuff we read (which shouldn't happen outside the initial
 		// connection but...)
