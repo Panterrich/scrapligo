@@ -38,6 +38,8 @@ func (c *Channel) sendInteractive(
 			prompts = append(prompts, c.PromptPattern)
 		}
 
+		fmt.Printf("Sending input: \"%s\"\n", e.ChannelInput)
+
 		err := c.Write([]byte(e.ChannelInput), e.HideInput)
 		if err != nil {
 			cr <- &result{b: nil, err: err}

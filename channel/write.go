@@ -12,9 +12,9 @@ func (c *Channel) Write(b []byte, r bool) error {
 	c.l.Debugf("channel write %#v", lm)
 
 	fmt.Printf("Write bytes: \"%s\"\n", string(b))
-	fmt.Printf("Write bytes (hex): ")
-	for i, b := range b {
-		fmt.Printf("%02x ", b)
+	fmt.Printf("Write bytes (hex):\n")
+	for i, byteVal := range b {
+		fmt.Printf("%02x ", byteVal)
 		if (i+1)%16 == 0 {
 			fmt.Println()
 		}
