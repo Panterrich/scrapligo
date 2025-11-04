@@ -134,6 +134,8 @@ func (c *Channel) Read() ([]byte, error) {
 
 	c.l.Debugf("channel read %#v", string(b))
 
+	CompareOutputs(b)
+
 	return b, nil
 }
 
@@ -156,6 +158,8 @@ func (c *Channel) ReadAll() ([]byte, error) {
 	}
 
 	c.l.Debugf("channel read %#v", string(b))
+
+	CompareOutputs(b)
 
 	return b, nil
 }
