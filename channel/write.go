@@ -1,7 +1,5 @@
 package channel
 
-import "fmt"
-
 // Write writes the given bytes b to the channel.
 func (c *Channel) Write(b []byte, r bool) error {
 	lm := string(b)
@@ -10,16 +8,6 @@ func (c *Channel) Write(b []byte, r bool) error {
 	}
 
 	c.l.Debugf("channel write %#v", lm)
-
-	fmt.Printf("Write bytes: \"%s\"\n", string(b))
-	fmt.Printf("Write bytes (hex):\n")
-	for i, byteVal := range b {
-		fmt.Printf("%02x ", byteVal)
-		if (i+1)%16 == 0 {
-			fmt.Println()
-		}
-	}
-	fmt.Println()
 
 	return c.t.Write(b)
 }

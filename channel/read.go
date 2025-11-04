@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"regexp"
 	"time"
@@ -259,6 +260,13 @@ func (c *Channel) ReadUntilPrompt(ctx context.Context) ([]byte, error) {
 		}
 
 		rb = append(rb, nb...)
+
+		CompareOutputs(rb)
+
+		fmt.Println("Prompt pattern match check:", c.PromptSearchDepth)
+		fmt.Printf("Prompt pattern: %q\n", c.PromptPattern.String())
+		fmt.Printf("Process read buf: %q\n", string(processReadBuf(rb, c.PromptSearchDepth)))
+		fmt.Printf("Match: %t\n", c.PromptPattern.Match(processReadBuf(rb, c.PromptSearchDepth)))
 
 		if c.PromptPattern.Match(processReadBuf(rb, c.PromptSearchDepth)) {
 			return rb, nil
